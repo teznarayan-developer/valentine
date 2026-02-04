@@ -5,22 +5,40 @@ const NameEntry = ({ onNameSubmit }) => {
   const [inputName, setInputName] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const encode = (data) => {
+    return Object.keys(data)
+      .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+      .join("&");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     if (!inputName.trim()) {
-      e.preventDefault(); // stop form submit
       setError("Please enter your name!");
       return;
     }
 
     if (inputName.length > 20) {
-      e.preventDefault();
       setError("Name is too long!");
       return;
     }
 
     setError("");
+
+    // 🔥 Send to Netlify
+    await fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: encode({
+        "form-name": "valentine-form",
+        name: inputName.trim(),
+      }),
+    });
+
     onNameSubmit(inputName.trim());
   };
+
 
   return (
     <div className="name-entry-container">
@@ -50,11 +68,11 @@ const NameEntry = ({ onNameSubmit }) => {
         {/* 🔥 NETLIFY FORM START */}
         <form
           name="valentine-form"
-          method="POST"
           data-netlify="true"
           onSubmit={handleSubmit}
           className="form-container"
         >
+
           {/* Required hidden input */}
           <input type="hidden" name="form-name" value="valentine-form" />
 
