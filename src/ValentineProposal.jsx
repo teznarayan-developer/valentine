@@ -30,7 +30,7 @@ const ValentineProposal = ({ name, onReset }) => {
     setYesCount(prev => prev + 1)
     setMessageIndex(Math.floor(Math.random() * messages.length))
     setShowMessage(true)
-    
+
     // Create floating hearts - darker colors
     const newHearts = [...Array(8)].map(() => ({
       id: Date.now() + Math.random(),
@@ -41,7 +41,7 @@ const ValentineProposal = ({ name, onReset }) => {
       speed: Math.random() * 3 + 2
     }))
     setHearts(prev => [...prev, ...newHearts])
-    
+
     // Auto-hide message after 3 seconds
     setTimeout(() => {
       setShowMessage(false)
@@ -50,20 +50,20 @@ const ValentineProposal = ({ name, onReset }) => {
 
   const moveNoButton = () => {
     if (!containerRef.current) return
-    
+
     // Ensure button stays within container bounds
     const maxX = 85  // Max percentage from left
     const minX = 15  // Min percentage from left
     const maxY = 85  // Max percentage from top
     const minY = 15  // Min percentage from top
-    
+
     const newX = Math.random() * (maxX - minX) + minX
     const newY = Math.random() * (maxY - minY) + minY
-    
+
     // Make button smaller with each click
     const newWidth = Math.max(80, 120 - noClicks * 10)
     const newHeight = Math.max(40, 50 - noClicks * 5)
-    
+
     setNoPosition({ x: newX, y: newY })
     setNoButtonSize({ width: newWidth, height: newHeight })
     setIsNoButtonVisible(true)
@@ -76,7 +76,7 @@ const ValentineProposal = ({ name, onReset }) => {
   const handleNoClick = () => {
     setNoClicks(prev => prev + 1)
     moveNoButton()
-    
+
     // Occasionally hide the button for a moment
     if (noClicks > 3 && Math.random() > 0.7) {
       setIsNoButtonVisible(false)
@@ -94,7 +94,7 @@ const ValentineProposal = ({ name, onReset }) => {
   // Update hearts animation
   useEffect(() => {
     const interval = setInterval(() => {
-      setHearts(prev => 
+      setHearts(prev =>
         prev
           .map(heart => ({
             ...heart,
@@ -115,7 +115,7 @@ const ValentineProposal = ({ name, onReset }) => {
         moveNoButton()
       }
     }, 2000)
-    
+
     return () => clearInterval(interval)
   }, [noClicks])
 
@@ -134,6 +134,28 @@ const ValentineProposal = ({ name, onReset }) => {
       }
     }
   }, [showMessage])
+
+  const normalizedName = name.toLowerCase().trim();
+
+  let heading = "💌 Will You Be My Valentine? 💌";
+  let subMessage = `Dear ${name},`;
+
+  if (/bug+i+/i.test(normalizedName)) {
+    heading = "💖 A Special Valentine Invitation 💖";
+    subMessage = `Dear ${name},  
+Tejnarayan is inviting you to be his Valentine and make this day full of love, smiles, and beautiful memories together. 🌹`;
+  }
+  if (normalizedName === "swati") {
+    heading = "💖 A Special Valentine Invitation 💖";
+    subMessage = `Dear ${name},  
+Tejnarayan is inviting you to be his Valentine and make this day full of love, smiles, and beautiful memories together. 🌹`;
+  }
+  else if (normalizedName === "poonam") {
+    heading = "💘 A Heartfelt Valentine Invite 💘";
+    subMessage = `Dear ${name},  
+Kunal has invited you to be his Valentine and celebrate a day filled with love, joy, and sweet moments. 💐`;
+  }
+
 
   return (
     <div className="proposal-container">
@@ -158,14 +180,15 @@ const ValentineProposal = ({ name, onReset }) => {
 
       <div className="proposal-card">
         <div className="proposal-header">
-          <h1>💌 Will You Be My Valentine? 💌</h1>
+          {/* <h1>💌 Will You Be My Valentine? 💌</h1> */}
           <div className="name-display">
             <span className="heart-icon">❤️</span>
-            <h2>Dear {name},</h2>
+            <h1>{heading}</h1>
+            <h2 style={{ whiteSpace: "pre-line" }}>{subMessage}</h2>
             <span className="heart-icon">❤️</span>
           </div>
         </div>
-        
+
         <div className="proposal-content" ref={containerRef}>
           <div className="love-message">
             <p>
@@ -174,9 +197,9 @@ const ValentineProposal = ({ name, onReset }) => {
             <p className="question">
               Will you make me the happiest person and be my Valentine?
             </p>
-         
+
           </div>
-          
+
           <div className="buttons-container">
             <button
               className="yes-btn"
@@ -184,7 +207,7 @@ const ValentineProposal = ({ name, onReset }) => {
             >
               <i className="fas fa-heart"></i> YES
             </button>
-            
+
             {isNoButtonVisible && (
               <button
                 className="no-btn"
@@ -215,7 +238,7 @@ const ValentineProposal = ({ name, onReset }) => {
                   <div className="sparkle sparkle-2">✨</div>
                   <div className="sparkle sparkle-3">✨</div>
                 </div>
-                <button 
+                <button
                   className="close-message-btn"
                   onClick={() => setShowMessage(false)}
                 >
@@ -224,7 +247,7 @@ const ValentineProposal = ({ name, onReset }) => {
               </div>
             </div>
           )}
-          
+
           {!isNoButtonVisible && (
             <div className="no-button-hint">
               <i className="fas fa-search"></i>
@@ -232,13 +255,13 @@ const ValentineProposal = ({ name, onReset }) => {
             </div>
           )}
         </div>
-        
+
         <div className="instructions">
           <p><i className="fas fa-mouse-pointer"></i> Tip: The "No" button runs away when you try to click it! The more you try, the smaller it gets!</p>
           <p><i className="fas fa-lightbulb"></i> Keep clicking "Yes" for more romantic messages!</p>
         </div>
-        
-       
+
+
       </div>
     </div>
   )
